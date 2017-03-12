@@ -64,7 +64,7 @@ function Base.show(d::Gol)
             if d.state[i,j] == zero(d.state[i,j])
                 print(" ")
             else
-                print_with_color(:blue, "X")
+                print_with_color(:magenta, "X")
             end
         end
         println()
