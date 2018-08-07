@@ -1,7 +1,7 @@
 module GameOfLife
 export Gol, game, glidergun
 
-type Gol
+mutable struct Gol
     state::Matrix{Int8}
     isperiodic::Bool
     generations::Int
@@ -64,25 +64,40 @@ function Base.show(d::Gol)
             if d.state[i,j] == zero(d.state[i,j])
                 print(" ")
             else
-                print_with_color(:magenta, "X")
+                printstyled("X", color=:light_blue, bold=true)
             end
         end
         println()
     end
 end
 
-"simulation start"
-function game(d::Gol)
+"""
+    game(d::Gol; tstep=0.1)
+simulation start
+"""
+function game(d::Gol; tstep=0.1)
     sleep(0.1)
-    show(d); 
+    show(d);
+    n = length(string(d.generations))
     for iter in 1:d.generations
        d.state = next_generation(d)
-       sleep(0.1)
+       sleep(tstep)
        run(`clear`)
        show(d)
+       print("\nGeneration: ", lpad(iter, n))
        sum(d.state) == 0 && break
     end
 end
+
+"""
+    game(;t=0.1, gen=100)
+"""
+function game(;t=0.1, gen=100)
+    row, col = displaysize(stdout)
+    d = Gol(row, col, isperiodic=true, generations=gen)
+    game(d, tstep=t)
+end
+
 
 "glider gun sample"
 function glidergun(n::Integer = 20, m::Integer = 36; generations=250)
