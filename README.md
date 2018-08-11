@@ -4,9 +4,12 @@
 
 ```julia
 using Pkg
-Pkg.clone("https://github.com/goropikari/GameOfLife.jl")
+Pkg.pkg"add https://github.com/goropikari/GameOfLife.jl"
 using GameOfLife
 game()
+
+row,col = 20, 30
+game(Gol(row, col, isperiodic=true, generations=50))
 ```
 
 Glider gun sample
