@@ -1,5 +1,8 @@
 module GameOfLife
-export Gol, game, glidergun
+
+import REPL
+using REPL.TerminalMenus
+export Gol, game, game2, glidergun
 
 mutable struct Gol
     state::Matrix{Int8}
@@ -38,7 +41,7 @@ end
 
 "update cells"
 function next_generation(d::Gol)
-    n,m = size(d.state)
+    n, m = size(d.state)
     next_state = zeros(Int8, n, m)
     for col in 1:m
         for row in 1:n
@@ -58,7 +61,7 @@ end
 
 "show state"
 function Base.show(d::Gol)
-    n,m = size(d.state)
+    n, m = size(d.state)
     for i in 1:n
         for j in 1:m
             if d.state[i,j] == zero(d.state[i,j])
@@ -98,8 +101,10 @@ function game(;t=0.1, gen=100)
     game(d, tstep=t)
 end
 
-
-"glider gun sample"
+"""
+    glidergun(n::Integer = 20, m::Integer = 36; generations=250)
+glider gun sample
+"""
 function glidergun(n::Integer = 20, m::Integer = 36; generations=250)
     d = Gol(n, m, isperiodic=false, generations=generations)
     d.state = zeros(Int8, n, m)
@@ -108,6 +113,28 @@ function glidergun(n::Integer = 20, m::Integer = 36; generations=250)
         d.state[pos...] = Int8(1)
     end
     return d
+end
+
+
+
+boardsize = ["(20, 20)", "(20, 40)", "(30, 30)", "(30, 40)", "(40, 40)", "(40, 80)", "(100, 200)"]
+boardsize_dict = Dict(zip(1:length(boardsize), eval.(Meta.parse.(boardsize))))
+menu = RadioMenu(boardsize, pagesize=4)
+function game2()
+    choice = request("Choose your favorite field size (row, column):", menu)
+    col, row = boardsize_dict[choice]
+    println()
+    periodic_condition = request("Choose boundary condition:",
+                                RadioMenu(["Periodic", "Non periodic"],
+                                pagesize=2))
+    condition = ifelse(isone(periodic_condition), true, false)
+
+    print("\nThe number of generations: ")
+    num_generation = Meta.parse(readline())
+    @assert isinteger(num_generation)
+
+    game(Gol(col, row, isperiodic=condition, generations=num_generation))
+    return nothing
 end
 
 end # module

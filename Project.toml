@@ -1,0 +1,7 @@
+name = "GameOfLife"
+uuid = "b53c8852-a93e-11e8-3341-5bdef8841476"
+authors = ["goropikari <goropikari56@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+REPL = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
